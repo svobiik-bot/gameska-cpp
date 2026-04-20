@@ -49,9 +49,20 @@ struct kun
     int hunger_bar_k = 0;
     int pece_o_kone = 0;
 };
-
+/*funkce na vypis konika*/
+void vypis_kun(kun k)
+{
+    cout << "  _^_ _^_                       " << k.jmeno << " (" << k.plemeno << ")" << endl;
+    cout << " / ^ __   \\                     " << "HP: " << k.zivoty_ted_k << "/" << k.zivoty_k << " | Hlad kone: " << k.hunger_bar_k << endl;
+    cout << "/_-_/   |_ \\__ __ __ __ __ _    " << "Pouto s konem: " << k.level_vernosti << " | Nebojacnost: " << k.nebojacnost << endl;
+    cout << "        /   _-_--___---   \\ \\   " << "Rychlost kone: " << k.rychlost << " | Pece o kone: " << k.pece_o_kone << endl;
+    cout << "        \\ ______________ /  |  " << endl;
+    cout << "         |  |          |  | ***  " << endl;
+    cout << "         |  |          |  |      " << endl;
+    cout << "         |__|          |__|      " << endl;
+}
 /*Funkce na vypis postavy*/
-void vypis_vse(string pribeh, postava p)
+void vypis_postava(postava p)
 {
 
     string barva_honoru = "\033[0m";
@@ -63,21 +74,68 @@ void vypis_vse(string pribeh, postava p)
     {
         barva_honoru = "\033[37m";
     };
-    cout << "--------------------------------------------------------------------------------" << endl;
-    cout << "" << p.jmeno << "(" << p.typ << ")\n";
-    cout << "" << "HP: " << p.zivoty_ted << "/" << p.zivoty << "| Dead eye: " << p.dead_eye_ted << "/" << p.dead_eye << " | Hlad: " << p.hunger_bar_ted << "/" << p.hunger_bar << endl;
-    cout << "" << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << endl;
-    cout << "" << "Plizeni: " << p.plizeni << " | Utok bez zbrane: " << p.utok_bez_zbrane << " | Znalost prirody: " << p.znalec_prirody << endl;
-    cout << "" << "Luk: " << p.luk << " | Dvojity high honor revolver: " << p.dvojity_r_high_honor << " | Brokovnice low honor: " << p.brokovnice_low_honor << endl;
-    cout << "" << "Pristup do rafinerie: " << p.pritstup_rafinerie << " | Pristup do velkeho mesta: " << p.pristup_velke_mesto << " | Pratelstvi s Indiany: " << p.pratelstvi_s_indiany << endl;
-    cout << "--------------------------------------------------------------------------------" << endl;
-    cout << "--- Událost tohoto dne ---" << endl;
-    cout << pribeh << endl;
-    cout << "--------------------------------------------------------------------------------" << endl;
+    if (p.typ == "Nacelnik Apacu")
+    {
+        cout << "--------------------------------------------------------------------------------" << endl;
+        cout << "  |||||     " << p.jmeno << "(" << p.typ << ")\n";
+        cout << " -------    " << "HP: " << p.zivoty_ted << "/" << p.zivoty << "| Dead eye: " << p.dead_eye_ted << "/" << p.dead_eye << " | Hlad: " << p.hunger_bar_ted << "/" << p.hunger_bar << endl;
+        cout << "  (o o)     " << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << endl;
+        cout << " /|   |\\    " << "Plizeni: " << p.plizeni << " | Utok bez zbrane: " << p.utok_bez_zbrane << " | Znalost prirody: " << p.znalec_prirody << endl;
+        cout << "/ |___| \\   " << "Luk: " << p.luk << " | Dvojity high honor revolver: " << p.dvojity_r_high_honor << " | Brokovnice low honor: " << p.brokovnice_low_honor << endl;
+        cout << "  /   \\     " << "Pristup do rafinerie: " << p.pritstup_rafinerie << " | Pristup do velkeho mesta: " << p.pristup_velke_mesto << " | Pratelstvi s Indiany: " << p.pratelstvi_s_indiany << endl;
+        cout << "--------------------------------------------------------------------------------" << endl;
+    }
+    if (p.typ == "Ropny Magnat")
+    {
+        cout << "--------------------------------------------------------------------------------" << endl;
+        cout << "    _____      " << p.jmeno << "(" << p.typ << ")\n";
+        cout << "   |     |     " << "HP: " << p.zivoty_ted << "/" << p.zivoty << "| Dead eye: " << p.dead_eye_ted << "/" << p.dead_eye << " | Hlad: " << p.hunger_bar_ted << "/" << p.hunger_bar << endl;
+        cout << " --|_____|--   " << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << endl;
+        cout << "    (o o)      " << "Plizeni: " << p.plizeni << " | Utok bez zbrane: " << p.utok_bez_zbrane << " | Znalost prirody: " << p.znalec_prirody << endl;
+        cout << "    --|--      " << "Luk: " << p.luk << " | Dvojity high honor revolver: " << p.dvojity_r_high_honor << " | Brokovnice low honor: " << p.brokovnice_low_honor << endl;
+        cout << "   |  |  |     " << "Pristup do rafinerie: " << p.pritstup_rafinerie << " | Pristup do velkeho mesta: " << p.pristup_velke_mesto << " | Pratelstvi s Indiany: " << p.pratelstvi_s_indiany << endl;
+        cout << "    /   \\     " << endl;
+        cout << "   |     |     " << endl;
+        cout << "--------------------------------------------------------------------------------" << endl;
+    }
+    if (p.typ == "Bounty Hunter")
+    {
+        cout << "--------------------------------------------------------------------------------" << endl;
+        cout << "      ____       " << p.jmeno << "(" << p.typ << ")\n";
+        cout << "   __(____)__    " << "HP: " << p.zivoty_ted << "/" << p.zivoty << "| Dead eye: " << p.dead_eye_ted << "/" << p.dead_eye << " | Hlad: " << p.hunger_bar_ted << "/" << p.hunger_bar << endl;
+        cout << "     (e e)       " << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << endl;
+        cout << "    /| v |\\      " << "Plizeni: " << p.plizeni << " | Utok bez zbrane: " << p.utok_bez_zbrane << " | Znalost prirody: " << p.znalec_prirody << endl;
+        cout << "   / |___| \\     " << "Luk: " << p.luk << " | Dvojity high honor revolver: " << p.dvojity_r_high_honor << " | Brokovnice low honor: " << p.brokovnice_low_honor << endl;
+        cout << "    /     \\      " << "Pristup do rafinerie: " << p.pritstup_rafinerie << " | Pristup do velkeho mesta: " << p.pristup_velke_mesto << " | Pratelstvi s Indiany: " << p.pratelstvi_s_indiany << endl;
+        cout << "   /_ __ __\\     " << endl;
+        cout << "--------------------------------------------------------------------------------" << endl;
+    }
+    if (p.typ == "Greenhorn")
+    {
+        cout << "--------------------------------------------------------------------------------" << endl;
+        cout << "   ___     " << p.jmeno << "(" << p.typ << ")\n";
+        cout << "  |___|    " << "HP: " << p.zivoty_ted << "/" << p.zivoty << "| Dead eye: " << p.dead_eye_ted << "/" << p.dead_eye << " | Hlad: " << p.hunger_bar_ted << "/" << p.hunger_bar << endl;
+        cout << "  (u u)    " << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << endl;
+        cout << "  --|--     " << "Plizeni: " << p.plizeni << " | Utok bez zbrane: " << p.utok_bez_zbrane << " | Znalost prirody: " << p.znalec_prirody << endl;
+        cout << "    |      " << "Luk: " << p.luk << " | Dvojity high honor revolver: " << p.dvojity_r_high_honor << " | Brokovnice low honor: " << p.brokovnice_low_honor << endl;
+        cout << "   / \\     " << "Pristup do rafinerie: " << p.pritstup_rafinerie << " | Pristup do velkeho mesta: " << p.pristup_velke_mesto << " | Pratelstvi s Indiany: " << p.pratelstvi_s_indiany << endl;
+        cout << "  |   |    " << endl;
+        cout << "--------------------------------------------------------------------------------" << endl;
+    }
 }
+void aktualizuj_obrazovku(postava hrac, kun muj_kun, string text_pribehu)
+{
+    cout << "\033[2J\033[1;1H";
 
+    vypis_postava(hrac);
+    vypis_kun(muj_kun);
+
+    cout << "------------------------------------------" << endl;
+    cout << text_pribehu << endl;
+}
 int main()
 {
+
     postava hrac;
     kun muj_kun;
     int volba_postavy = 0;
@@ -249,7 +307,8 @@ int main()
         }
         string pribeh = " ";
         cout << "Jsi si jisty s vyberem postavy? Jestli chces znovu napis 0\n";
-        vypis_vse(pribeh, hrac);
+        vypis_postava(hrac);
+        vypis_kun(muj_kun);
         int jista_volba = 0;
         cin >> jista_volba;
         if (jista_volba == 1)
@@ -257,6 +316,16 @@ int main()
             jistota = false;
         }
     }
-    string pribeh = "Dorazil jsi do mesta Valentine. Tvuj kun na tebe ceka na nadrazi\n";
-    vypis_vse(pribeh, hrac);
+
+    aktualizuj_obrazovku(hrac, muj_kun, "Dojel jsi do mesta Valentine mas moznost pojmenovat sveho kone.");
+    cin >> muj_kun.jmeno;
+    aktualizuj_obrazovku(hrac, muj_kun, "Sveho kone jsi pojmenoval: ");
+    cout << muj_kun.jmeno;
+
+    if (hrac.zivoty_ted < 0)
+    {
+        cout << "\n*******Bohuzel jsi neprezil WESTERN*******";
+        cout << "*******YOU ARE DEAD MAN*******";
+        return 0;
+    }
 }
