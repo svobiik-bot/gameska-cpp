@@ -21,6 +21,7 @@ struct postava
     int zkusenosti = 0;
     /*Vysoky honor bude 100 a nizky -100*/
     int honor = 0;
+    int respekt = 0;
     /*vlastnosti boj */
     int plizeni = 0;
     int utok_bez_zbrane = 0;
@@ -79,7 +80,7 @@ void vypis_postava(postava p)
         cout << "--------------------------------------------------------------------------------" << endl;
         cout << "  |||||     " << p.jmeno << "(" << p.typ << ")\n";
         cout << " -------    " << "HP: " << p.zivoty_ted << "/" << p.zivoty << "| Dead eye: " << p.dead_eye_ted << "/" << p.dead_eye << " | Hlad: " << p.hunger_bar_ted << "/" << p.hunger_bar << endl;
-        cout << "  (o o)     " << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << endl;
+        cout << "  (o o)     " << "Zlato: " << p.zlato << "$ | Level:" << p.level << " | Zkusenosti: " << p.zkusenosti << " | Honor: " << barva_honoru << p.honor << "\033[0m" << " | Respekt: " << p.respekt << endl;
         cout << " /|   |\\    " << "Plizeni: " << p.plizeni << " | Utok bez zbrane: " << p.utok_bez_zbrane << " | Znalost prirody: " << p.znalec_prirody << endl;
         cout << "/ |___| \\   " << "Luk: " << p.luk << " | Dvojity high honor revolver: " << p.dvojity_r_high_honor << " | Brokovnice low honor: " << p.brokovnice_low_honor << endl;
         cout << "  /   \\     " << "Pristup do rafinerie: " << p.pritstup_rafinerie << " | Pristup do velkeho mesta: " << p.pristup_velke_mesto << " | Pratelstvi s Indiany: " << p.pratelstvi_s_indiany << endl;
@@ -135,10 +136,14 @@ void aktualizuj_obrazovku(postava hrac, kun muj_kun, string text_pribehu)
 }
 int main()
 {
+    postava opilec;
+    opilec.zivoty = 25;
+    opilec.zivoty_ted = 25;
+    opilec.utok_bez_zbrane = 2;
 
     postava hrac;
     kun muj_kun;
-    int volba_postavy = 0;
+    int volba = 0;
 
     cout << "-------Vitam te cizince na divokem zapade-------\n";
     cout << "Za jakou postavu by jsi si pral hrat\n";
@@ -148,8 +153,8 @@ int main()
     while (jistota)
     {
         cout << "\nKlidne si muzes prohlednout specifikace postav a pak si teprve vybrat\n";
-        cin >> volba_postavy;
-        switch (volba_postavy)
+        cin >> volba;
+        switch (volba)
         {
         /*Voba nacelnik apacu*/
         case 1:
@@ -166,6 +171,7 @@ int main()
             hrac.level = 0;
             hrac.zkusenosti = 0;
             hrac.honor = 50;
+            hrac.respekt = 50;
             hrac.plizeni = 75;
             hrac.utok_bez_zbrane = 15;
             hrac.znalec_prirody = 100;
@@ -204,6 +210,7 @@ int main()
             hrac.level = 0;
             hrac.zkusenosti = 0;
             hrac.honor = -50;
+            hrac.respekt = 20;
             hrac.plizeni = 0;
             hrac.utok_bez_zbrane = 5;
             hrac.znalec_prirody = 0;
@@ -243,6 +250,7 @@ int main()
             hrac.level = 0;
             hrac.zkusenosti = 0;
             hrac.honor = 0;
+            hrac.respekt = 60;
             hrac.plizeni = 30;
             hrac.utok_bez_zbrane = 12;
             hrac.znalec_prirody = 40;
@@ -281,6 +289,7 @@ int main()
             hrac.level = 0;
             hrac.zkusenosti = 0;
             hrac.honor = 50;
+            hrac.respekt = 0;
             hrac.plizeni = 10;
             hrac.utok_bez_zbrane = 8;
             hrac.znalec_prirody = 20;
@@ -317,12 +326,69 @@ int main()
         }
     }
 
-    aktualizuj_obrazovku(hrac, muj_kun, "Dojel jsi do mesta Valentine mas moznost pojmenovat sveho kone.");
+    aktualizuj_obrazovku(hrac, muj_kun, "Dojel jsi do mesta Valentine. Ztratil jsi svou zbran, ale jako by ti pralo stesti, mistni Smith´s Iron & Lead pro tebe jednu ma.\nTaky mas moznost pojmenovat sveho kone.");
     cin >> muj_kun.jmeno;
     aktualizuj_obrazovku(hrac, muj_kun, "Sveho kone jsi pojmenoval: ");
     cout << muj_kun.jmeno;
 
-    if (hrac.zivoty_ted < 0)
+    aktualizuj_obrazovku(hrac, muj_kun, "Nasednes na " + muj_kun.jmeno + ".\nPo ceste do mistniho lokalu te nekdo shodi z kone\nJe to nejaky misti ozrala a vyzval te na souboj");
+    cout << "\nUbral ti 1 Hp !TED JSI NA RADE TY!";
+    hrac.zivoty_ted -= 1;
+    /*boj*/
+    while (hrac.zivoty_ted > 0 || opilec.zivoty_ted)
+    {
+        cout << "\nTvoje Hp: " << hrac.zivoty_ted << " | Opilcovo Hp: " << opilec.zivoty_ted << endl;
+        if (opilec.zivoty_ted > 5)
+        {
+            cout << "Zde jsou tvoje možnosti: Pokusit se mu to vymluvit(1), Dat mu zpet jednu pesti(2) -- spotrebuje 1 dead eye utect(3)\n";
+            cin >> volba;
+            if (volba == 1)
+            {
+                if (hrac.respekt >= 50)
+                {
+                    cout << "Diky tvemu respektu se mu to podarilo vymluvit a gringo si radsi sel po svejch\n";
+                    break;
+                }
+                else
+                {
+                    cout << "Bohuzel nemas dostatecny respekt a gringo ti jeste jednu k tomu napalil\n";
+                    hrac.zivoty_ted--;
+                }
+            }
+            if (volba == 2)
+            {
+                opilec.zivoty_ted -= hrac.utok_bez_zbrane;
+                cout << "Zasadil jsi mi poradnou ranu a trochu se zapotacel\n Presto se ale zvednual a dal ti taky jednu\n";
+                hrac.zivoty_ted -= opilec.utok_bez_zbrane;
+            }
+            if (volba == 3)
+            {
+                cout << "Rozhodl jsi se utect, opilce jsi tedy nechal tam kde je a vzal nohy do zajecich.\nTady u nas na zapade je ale dulezite, i jak te vnimaji ostatni. Timto jsi si ubral respekt. Priste na to pozor";
+                hrac.respekt -= 6;
+                break;
+            }
+        }
+        else
+        {
+            cout << "\nChudak uz dostal tolik ran ze ani nestoji. Pustis ho(1) nebo ho umlatis k smrti(2).(prece jen si zacal a tady vitezi ten silnejsi)\n";
+            cin >> volba;
+            if (volba == 1)
+            {
+                cout << "Gringo od tebe dostal za ponaucenou. Tim ze jsi ho pustil, jsi dokazal ze si za necim stojis a ziskal jsi cest\n";
+                hrac.honor += 5;
+            }
+            if (volba == 2)
+            {
+                hrac.honor -= 5;
+                hrac.respekt += 5;
+                cout << "Zabijeni lidi kdyz jsou bezmocni snizuje tovji cest.\n Tim ze to videli ostatni lidi, jsi vsak dostal vice respektu\n";
+            }
+            break;
+        }
+    }
+    aktualizuj_obrazovku(hrac, muj_kun, "");
+
+    if (hrac.zivoty_ted <= 0)
     {
         cout << "\n*******Bohuzel jsi neprezil WESTERN*******";
         cout << "*******YOU ARE DEAD MAN*******";
