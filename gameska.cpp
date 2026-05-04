@@ -4,6 +4,15 @@
 #include <iostream>
 using namespace std;
 
+struct nepritel
+{
+    string jmeno_n;
+    int hp_n;
+    int utok_n;
+    bool ma_zbran;
+    string zbran_n;
+    string hláška;
+};
 struct postava
 {
     string jmeno = " ";
@@ -27,6 +36,8 @@ struct postava
     int utok_bez_zbrane = 0;
     int znalec_prirody = 0;
     /* zbrane */
+    bool winchesterovka = false;
+    bool brokovnice = false;
     bool luk = false; /*dostupne jen pri pratelstvi s indiany a treninkem*/
     /*dosazen jen 100+- honor*/
     bool dvojity_r_high_honor = false; /*sance na uzdraveni pri likvidovani nepratel*/
@@ -134,6 +145,85 @@ void aktualizuj_obrazovku(postava hrac, kun muj_kun, string text_pribehu)
     cout << "------------------------------------------" << endl;
     cout << text_pribehu << endl;
 }
+
+void souboj(postava &hrac, kun &muj_kun, string jmeno_n, int hp_n, int utok_n, string zbran_n)
+{
+    while (hrac.zivoty_ted > 0 && hp_n > 0)
+    {
+        aktualizuj_obrazovku(hrac, muj_kun, "BOJUJES: " + jmeno_n);
+
+        cout << "\n------------------------------------------\n";
+        cout << "Nepritel: " << jmeno_n << " | HP: " << hp_n << " | Zbran: " << zbran_n << endl;
+        cout << "Tvoje HP: " << hrac.zivoty_ted << " | Dead Eye: " << hrac.dead_eye_ted << endl;
+        cout << "------------------------------------------\n";
+
+        cout << "Co udelas: (1)-Utok pesti\n(2)-strelba revolverem\n ";
+        if (hrac.brokovnice)
+            cout << "(3)-strelit z brokovnice\n";
+        if (hrac.winchesterovka)
+            cout << "(4)-strelit z winchestrovky\n";
+        if (hrac.dvojity_r_high_honor)
+            cout << "(5)-strelit z dvojiteho high honor revolveru\n";
+        if (hrac.brokovnice_low_honor)
+            cout << "(6)-strelit z low honor brokovnice\n";
+        cout << "(7)-Utect";
+
+        int volba;
+        cin >> volba;
+        if (volba == 1)
+        {
+            hp_n -= hrac.utok_bez_zbrane;
+            cout << "Dal jsi mu ranu za " << hrac.utok_bez_zbrane << "hp\n";
+        }
+        if (volba == 2)
+        {
+            hp_n -= 20;
+            cout << "Strelil jsi ho revolverem\n";
+        }
+        if (volba == 3 && hrac.brokovnice)
+        {
+            hp_n -= 30;
+            cout << "Dal jsi mu poradnou slupku brokovnici (-30HP)\n";
+        }
+        if (volba == 4 && hrac.winchesterovka)
+        {
+            hp_n -= 25;
+            cout << "Strelil jsi ho winchestrovkou za 25hp\n";
+        }
+        if (volba == 5 && hrac.dvojity_r_high_honor)
+        {
+            cout << "Strelil jsi z dvojiteho high honor revolveru\n";
+        }
+        if (volba == 6 && hrac.brokovnice_low_honor)
+        {
+            cout << "Strelil jsi z low honor brokovnice ";
+        }
+        if (volba == 7)
+        {
+            if (muj_kun.rychlost >= 70)
+            {
+                cout << "utekl jsi\n";
+                break;
+            }
+            else
+            {
+                cout << "Tvuj kun je moc pomaly, Neutekl jsi\n";
+            }
+        }
+        else
+        {
+            cout << "Nez se ses rozmyslel, nepritel zautocil!\n";
+        }
+        /*tah nepritele*/
+        if (hp_n > 0)
+        {
+            cout << jmeno_n << " utoci pomoci " << zbran_n << "!" << endl;
+            hrac.zivoty_ted -= utok_n; // Tady použiješ tu sílu, co jsi poslal do funkce
+        }
+        system("pause");
+    }
+}
+
 int main()
 {
     postava opilec;
@@ -387,11 +477,4 @@ int main()
         }
     }
     aktualizuj_obrazovku(hrac, muj_kun, "");
-
-    if (hrac.zivoty_ted <= 0)
-    {
-        cout << "\n*******Bohuzel jsi neprezil WESTERN*******";
-        cout << "*******YOU ARE DEAD MAN*******";
-        return 0;
-    }
 }
