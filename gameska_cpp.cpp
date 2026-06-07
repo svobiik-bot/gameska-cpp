@@ -191,25 +191,21 @@ void zkontroluj_level(postava &hrac)
 //  SOUBOJ (1 nepritel
 bool souboj(postava &hrac, kun &muj_kun, nepritel &n, bool boss_tah_prvni = false)
 {
-    // Boss/miniboss utoči prvni (dle zadani)
-    if (boss_tah_prvni)
-    {
-        cout << n.jmeno_n << ": \"" << n.hlasky[rand() % n.pocet_hlasek] << "\"\n";
-        cout << n.jmeno_n << " utoči PRVNI za " << n.utok_n << " hp!\n";
-        hrac.zivoty_ted -= n.utok_n;
-        if (hrac.zivoty_ted <= 0)
-        {
-            cout << "!!! Jsi mrtev. Hra konci. !!!\n";
-            return false;
-        }
-        cout << "Dostal jsi " << n.utok_n << " hp! Ted jsi na rade ty!\n";
-        cekej();
-    }
 
     while (hrac.zivoty_ted > 0 && n.hp_n > 0)
     {
         aktualizuj_obrazovku(hrac, muj_kun, "BOJUJES: " + n.jmeno_n);
-
+        if (n.je_boss)
+        {
+            if (n.hp_n > 0)
+            {
+                cout << n.jmeno_n << ": \"" << n.hlasky[rand() % n.pocet_hlasek] << "\"\n";
+                cout << n.jmeno_n << " utoci pomoci " << n.zbran_n << " za " << n.utok_n << " hp!\n";
+                hrac.zivoty_ted -= n.utok_n;
+                if (hrac.zivoty_ted < 0)
+                    hrac.zivoty_ted = 0;
+            }
+        }
         cout << "\n------------------------------------------\n";
         cout << "Nepritel: " << n.jmeno_n << " | HP: " << n.hp_n << "/" << n.hp_max_n << " | Zbran: " << n.zbran_n << endl;
         cout << "Tvoje HP: " << hrac.zivoty_ted << " | Dead Eye: " << hrac.dead_eye_ted << endl;
@@ -301,7 +297,7 @@ bool souboj(postava &hrac, kun &muj_kun, nepritel &n, bool boss_tah_prvni = fals
         {
             hrac.dead_eye_ted -= 15;
             n.hp_n -= 30;
-            cout << "Vystrelil jsi sipku za 30 hp!\n";
+            cout << "Vystrelil jsi sip za 30 hp!\n";
         }
         else
         {
@@ -310,10 +306,13 @@ bool souboj(postava &hrac, kun &muj_kun, nepritel &n, bool boss_tah_prvni = fals
         }
 
         if (hrac.dead_eye_ted < 0)
+        {
             hrac.dead_eye_ted = 0;
+        }
         if (n.hp_n < 0)
+        {
             n.hp_n = 0;
-
+        }
         // Tah nepritele
         if (n.hp_n > 0)
         {
@@ -375,9 +374,7 @@ bool souboj(postava &hrac, kun &muj_kun, nepritel &n, bool boss_tah_prvni = fals
     return true;
 }
 
-// ============================================================
 //  SOUBOJ VICE NEPRATEL
-// ============================================================
 bool souboj_vice(postava &hrac, kun &muj_kun, nepritel nepratele[], int pocet)
 {
     while (hrac.zivoty_ted > 0)
@@ -602,9 +599,131 @@ bool souboj_vice(postava &hrac, kun &muj_kun, nepritel nepratele[], int pocet)
     return true;
 }
 
-// ============================================================
+bool souboj_boss(postava &hrac, kun &muj_kun, nepritel &n)
+{
+    while (hrac.zivoty_ted > 0)
+    {
+        bool hrac_zmrazeni = false;
+        aktualizuj_obrazovku(hrac, muj_kun, "Souboj s finalnim bossem\n Jeho ability: sance na paraliovani tebe\n");
+        int nahodne_cislo = rand() % 100 + 1;
+        if (n.hp_n > 0)
+        {
+            if (nahodne_cislo <= 30)
+            {
+                hrac_zmrazeni = true;
+                cout << "Cronwall te zastavil svou statickou elektrinou\n nemuzes nic delat a on se doheeluje +5hp a dostane utok +1hp ";
+            }
+            if (n.hp_n > 0)
+            {
+                cout << n.jmeno_n << ": \"" << n.hlasky[rand() % n.pocet_hlasek] << "\"\n";
+                cout << n.jmeno_n << " utoci pomoci " << n.zbran_n << " za " << n.utok_n << " hp!\n";
+                hrac.zivoty_ted -= n.utok_n;
+                if (hrac.zivoty_ted < 0)
+                {
+                    hrac.zivoty_ted = 0;
+                }
+            }
+
+            cekej();
+        }
+        if (nahodne_cislo <= 30)
+        {
+            hrac_zmrazeni = true;
+            cout << "Cronwall te zastavil svou statickou elektrinou\n nemuzes nic delat a on se doheeluje +5hp a dostane utok +1hp ";
+        }
+        if (hrac_zmrazeni == false && hrac.zivoty_ted > 0)
+        {
+            cout << "Co udelas:\n";
+            cout << "(1) Utok pesti    [" << hrac.utok_bez_zbrane << " hp, 0 dead eye]\n";
+            cout << "(2) Strelba revolverem  [20 hp, 10 dead eye]\n";
+            if (hrac.brokovnice)
+            {
+                cout << "(3) Strelit z brokovnice  [50 hp, 45 dead eye]\n";
+            }
+            if (hrac.winchesterovka)
+            {
+                cout << "(4) Strelit z winchestrovky  [35 hp, 25 dead eye]\n";
+            }
+            if (hrac.dvojity_r_high_honor)
+            {
+                cout << "(5) Strelit z dvojiteho high honor revolveru  [65 hp, 30 dead eye]\n";
+            }
+        }
+        if (hrac.brokovnice_low_honor)
+        {
+            cout << "(6) Strelit z low honor brokovnice  [80 hp, 60 dead eye]\n";
+        }
+        if (hrac.luk)
+        {
+            cout << "(7) Vystrelit sipku z luku  [30 hp, 15 dead eye]\n";
+        }
+
+        int volba;
+        cin >> volba;
+
+        // Dead Eye kontrola
+        if (hrac.dead_eye_ted <= 0 && volba >= 2 && volba <= 7)
+        {
+            cout << "Nemas dostatek Dead Eye! Bijes se pesti.\n";
+            volba = 1;
+        }
+
+        // Tah hrace
+        if (volba == 1)
+        {
+            n.hp_n -= hrac.utok_bez_zbrane;
+            cout << "Dal jsi mu ranu za " << hrac.utok_bez_zbrane << " hp\n";
+        }
+        else if (volba == 2)
+        {
+            hrac.dead_eye_ted -= 10;
+            n.hp_n -= 20;
+            cout << "Strelil jsi ho revolverem za 20 hp\n";
+        }
+        else if (volba == 3 && hrac.brokovnice)
+        {
+            hrac.dead_eye_ted -= 45;
+            n.hp_n -= 50;
+            cout << "Dal jsi mu poradnou slupku brokovnici za 50 hp!\n";
+        }
+        else if (volba == 4 && hrac.winchesterovka)
+        {
+            hrac.dead_eye_ted -= 25;
+            n.hp_n -= 35;
+            cout << "Strelil jsi ho winchestrovkou za 35 hp\n";
+        }
+        else if (volba == 5 && hrac.dvojity_r_high_honor)
+        {
+            hrac.dead_eye_ted -= 30;
+            n.hp_n -= 65;
+            cout << "Strelil jsi z dvojiteho high honor revolveru za 65 hp!\n";
+        }
+        else if (volba == 6 && hrac.brokovnice_low_honor)
+        {
+            hrac.dead_eye_ted -= 60;
+            n.hp_n -= 80;
+            cout << "Strelil jsi z low honor brokovnice za 80 hp!\n";
+        }
+        else if (volba == 7 && hrac.luk)
+        {
+            hrac.dead_eye_ted -= 15;
+            n.hp_n -= 30;
+            cout << "Vystrelil jsi sip za 30 hp!\n";
+        }
+        else
+        {
+            cout << "Neplatna volba — bijes se pesti za " << hrac.utok_bez_zbrane << " hp.\n";
+            n.hp_n -= hrac.utok_bez_zbrane;
+        }
+
+        if (hrac.dead_eye_ted < 0)
+        {
+            hrac.dead_eye_ted = 0;
+        }
+    }
+}
 //  VESNICE
-// ============================================================
+
 void vesnice(postava &hrac, kun &muj_kun, string nazev)
 {
     aktualizuj_obrazovku(hrac, muj_kun, "Vitej ve vesnici " + nazev + "!");
@@ -1058,14 +1177,13 @@ nepritel boss_cornwall()
     n.hp_max_n = 250;
     n.utok_n = 18;
     n.ma_zbran = true;
-    n.zbran_n = "Legendarni Revolver a Dynamit";
+    n.zbran_n = "Legendarni Revolver a Elektricky Dynamit";
     n.hlasky[0] = "Mam penize i kulky — co mas ty?";
     n.hlasky[1] = "Tato zeme patri tomu kdo si ji koupí!";
     n.hlasky[2] = "Zaplatím kazdemu kdo ti sneze hlavu!";
     n.pocet_hlasek = 3;
     n.zlato_n = 200;
     n.xp_n = 100;
-    n.je_boss = true;
     return n;
 }
 
@@ -1249,7 +1367,6 @@ int main()
         }
     }
 
-    // ---- UVOD — tvuj original ----
     aktualizuj_obrazovku(hrac, muj_kun,
                          "Dojel jsi do mesta Valentine. Ztratil jsi svou zbran, ale jako by ti pralo\n"
                          "stesti, mistni Smith's Iron & Lead pro tebe jednu ma.\n"
@@ -1468,6 +1585,12 @@ int main()
         if (!souboj(hrac, muj_kun, m))
             return 0;
     }
+    aktualizuj_obrazovku(hrac, muj_kun,
+                         "Dojel jsi do posledni osady pred finalnim setkanim s Cornwallem\n"
+                         "Doporucuji se vybavit pred dalsi cestou\n"
+                         " Mozna uz poktas primo Cornwalla\n");
+    cekej();
+    vesnice(hrac, muj_kun, "Valentine");
 
     //  Cornwall_straz
     aktualizuj_obrazovku(hrac, muj_kun, "Pred samotnou rafinerií stoji elegantní pistolnik — Cornwalluv placeny straze.");
@@ -1492,6 +1615,7 @@ int main()
                          "A tak je tu chvile. Ve velke hale rafinerie te ceka sam\n"
                          "\"BARON ROPY\" HARLAN CORNWALL JR.\n"
                          "Nejbohatsi, nejkrutejsi a nejnebezpecnejsi muz na zapade.\n"
+                         "Hlavně pozor, vypada to ze spadl nekam elektriny a ma specialni schopnosti\n"
                          "Utoci prvni — a nema v planu ztratit.");
     cout << "\n=== FINALNI SOUBOJ ===\n";
     cekej();
